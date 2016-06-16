@@ -48,6 +48,7 @@ add_executable(
   ${dependency_files}
 )
 
+#Spécification WIN32
 if(WIN32)
   target_link_libraries(xPLChrono ws2_32)
   target_link_libraries(unittest ws2_32)
