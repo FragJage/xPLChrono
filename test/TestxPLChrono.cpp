@@ -1,21 +1,28 @@
-#include "UnitTest/UnitTest.h"
-#include "xPLChrono.h"
-#include <cassert>
-#include <thread>
-#include "thread/mingw.thread.h"
-#include "SimpleSock/ControlSockMock.h"
-#include "xPLLib/Schemas/SchemaObject.h"
-#include "Plateforms/Plateforms.h"
+#include "TestxPLChrono.h"
 
 using namespace std;
 
-extern void SetMockTime(int year, int month, int day, int hour, int minute, int seconde);
-
-
-vector<TestClass> UnitTest::m_TestClassList;
 xPLChrono xPLDev;
 
-void start()
+TestxPLChrono::TestxPLChrono() : TestClass("xPLChrono", this)
+{
+	addTest("Start", &TestxPLChrono::Start);
+	addTest("StdConfig", &TestxPLChrono::StdConfig);
+	addTest("SetAdvConfig", &TestxPLChrono::SetAdvConfig);
+	addTest("Counter", &TestxPLChrono::Counter);
+	addTest("GetAdvConfig", &TestxPLChrono::GetAdvConfig);
+	addTest("Stop", &TestxPLChrono::Stop);
+	addTest("ReStart", &TestxPLChrono::ReStart);
+	addTest("SavedValue", &TestxPLChrono::SavedValue);
+	addTest("DelAdvConfig", &TestxPLChrono::DelAdvConfig);
+	addTest("ReStop", &TestxPLChrono::ReStop);
+}
+
+TestxPLChrono::~TestxPLChrono()
+{
+}
+
+void TestxPLChrono::ThreadStart(xPLChrono* pxPLDev)
 {
     char exeName[] = "test";
     char confName[] = "config";
@@ -23,10 +30,10 @@ void start()
 
     argv[0]= exeName;
     argv[1]= confName;
-    xPLDev.ServiceStart(2, argv);
+    pxPLDev->ServiceStart(2, argv);
 }
 
-TEST_METHOD(xPLChrono, Start)
+bool TestxPLChrono::Start()
 {
     string msg;
     xPL::SchemaObject sch;
@@ -34,7 +41,7 @@ TEST_METHOD(xPLChrono, Start)
     remove("config");
     SetMockTime(2000, 1, 1, 12, 30, 0);
 
-    thread integrationTest(start);
+    thread integrationTest(ThreadStart, &xPLDev);
     integrationTest.detach();
 
     msg = ControlSockMock::GetLastSend(10);
@@ -44,7 +51,7 @@ TEST_METHOD(xPLChrono, Start)
     return true;
 }
 
-TEST_METHOD(xPLChrono, StdConfig)
+bool TestxPLChrono::StdConfig()
 {
     string msg;
     xPL::SchemaObject sch;
@@ -63,7 +70,7 @@ TEST_METHOD(xPLChrono, StdConfig)
     return true;
 }
 
-TEST_METHOD(xPLChrono, SetAdvConfig)
+bool TestxPLChrono::SetAdvConfig()
 {
     string msg;
     xPL::SchemaObject sch;
@@ -97,7 +104,7 @@ TEST_METHOD(xPLChrono, SetAdvConfig)
     return true;
 }
 
-TEST_METHOD(xPLChrono, Counter)
+bool TestxPLChrono::Counter()
 {
     string msg;
     xPL::SchemaObject sch;
@@ -122,7 +129,7 @@ TEST_METHOD(xPLChrono, Counter)
     return true;
 }
 
-TEST_METHOD(xPLChrono, GetAdvConfig)
+bool TestxPLChrono::GetAdvConfig()
 {
     string msg;
     xPL::SchemaObject sch;
@@ -143,7 +150,7 @@ TEST_METHOD(xPLChrono, GetAdvConfig)
     return true;
 }
 
-TEST_METHOD(xPLChrono, Stop)
+bool TestxPLChrono::Stop()
 {
     string msg;
 
@@ -155,19 +162,21 @@ TEST_METHOD(xPLChrono, Stop)
     return true;
 }
 
-TEST_METHOD(xPLChrono, ReStart)
+bool TestxPLChrono::ReStart()
 {
     string msg;
     xPL::SchemaObject sch;
 
-    thread integrationTest(start);
+    Plateforms::delay(5000);
+    thread integrationTest(ThreadStart, &xPLDev);
     integrationTest.detach();
 
+    Plateforms::delay(5000);
     msg = ControlSockMock::GetLastSend(10);     //Pass hbeat message
     return true;
 }
 
-TEST_METHOD(xPLChrono, SavedValue)
+bool TestxPLChrono::SavedValue()
 {
     string msg;
     xPL::SchemaObject sch;
@@ -185,7 +194,7 @@ TEST_METHOD(xPLChrono, SavedValue)
     return true;
 }
 
-TEST_METHOD(xPLChrono, DelAdvConfig)
+bool TestxPLChrono::DelAdvConfig()
 {
     string msg;
     xPL::SchemaObject sch;
@@ -206,9 +215,10 @@ TEST_METHOD(xPLChrono, DelAdvConfig)
     return true;
 }
 
-TEST_METHOD(xPLChrono, ReStop)
+bool TestxPLChrono::ReStop()
 {
     xPLDev.ServiceStop();
+    remove("config");
     return true;
 }
 

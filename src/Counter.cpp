@@ -105,7 +105,8 @@ bool Counter::UpdateDuration(const string& state)
     else
         newState = false;
 
-    if(m_stateHIGH==true) m_duration += difftime(newTime, m_lastTime);
+    if(m_stateHIGH==true)
+        m_duration += difftime(newTime, m_lastTime);
 
     m_lastTime = newTime;
     m_stateHIGH = newState;

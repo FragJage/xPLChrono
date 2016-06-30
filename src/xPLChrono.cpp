@@ -195,9 +195,19 @@ void xPLChrono::AdvanceConfigure()
 
 string xPLChrono::GetDataFileName()
 {
-    SimpleFolders   fileName;
+    SimpleFolders   folder;
+    string          fileName;
 
-    return fileName.AddFile(m_xPLDevice.GetConfigFolder(), "xPLChrono.data");
+    try
+    {
+        fileName = folder.AddFile(m_xPLDevice.GetConfigFolder(), "xPLChrono.data");
+    }
+    catch(char const* msg)
+    {
+        LOG_ERROR(m_Log) << "Unable to get user folder : "<< msg;
+        fileName = "xPLChrono.data";
+    }
+    return fileName;
 }
 
 void xPLChrono::SaveData()

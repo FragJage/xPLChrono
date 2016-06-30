@@ -25,7 +25,11 @@
 #include <iostream>
 #include <string>
 #include <mutex>
-#include "thread/mingw.mutex.h"
+#ifdef WIN32
+    #include "Thread/mingw.mutex.h"
+#else
+    #include <thread>
+#endif
 
 class ControlSockMock
 {

@@ -62,7 +62,6 @@ Service::Service(const string& name, const string& description, IService *servic
 	strcpy(m_pDescription, description.c_str());
 	m_iService = service;
 	m_pInstance = this;
-
 	return;
 }
 
@@ -355,7 +354,7 @@ int Service::Start(int argc, char* argv[])
     if (argc == 2 && (*argv[1] == '-' || *argv[1] == '/'))
     {
         if(strcmp("start", argv[1]+1) == 0) return CmdStart(argc, argv);
-        if(strcmp("stop", argv[1]+1) == 0) return CmdStop(argc, argv);
+        if(strcmp("stop", argv[1]+1) == 0) return CmdStop();
         if(strcmp("restart", argv[1]+1) == 0) return CmdRestart(argc, argv);
         if(strcmp("console", argv[1]+1) == 0) return m_iService->ServiceStart(argc, argv);
     }
@@ -420,7 +419,7 @@ int Service::CmdStart(int argc, char* argv[])
     return ret;
 }
 
-int Service::CmdStop(int argc, char* argv[])
+int Service::CmdStop()
 {
     int pid;
 
@@ -432,12 +431,13 @@ int Service::CmdStop(int argc, char* argv[])
         throw Service::Exception(0x0271, "Service::CmdStop : Unable to kill the daemon");
 
 	unlink(m_pidFile.c_str());
+	return 0;
 }
 
 int Service::CmdRestart(int argc, char* argv[])
 {
-    CmdStop(argc, argv);
-    CmdStart(argc, argv);
+    CmdStop();
+    return CmdStart(argc, argv);
 }
 #endif // WIN32
 

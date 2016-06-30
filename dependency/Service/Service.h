@@ -42,7 +42,7 @@ private:
         SERVICE_STATUS_HANDLE	m_serviceStatusHandle;
 	#else
         int CmdStart(int argc, char* argv[]);
-        int CmdStop(int argc, char* argv[]);
+        int CmdStop();
         int CmdRestart(int argc, char* argv[]);
 
         int FindPid();

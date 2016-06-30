@@ -18,14 +18,17 @@
     along with SimpleSock.  If not, see <http://www.gnu.org/licenses/>.
 */
 /***************************************************************************************************/
-#include "SimpleSock.h"
+#include "SimpleSock/SimpleSock.h"
 #include "ControlSockMock.h"
 #include "Plateforms/Plateforms.h"
 using namespace std;
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 /***************************************************************************************************/
 /***                                                                                             ***/
-/*** Class SimpleSock                                                                            ***/
+/*** Class SimpleSockMock                                                                        ***/
 /***                                                                                             ***/
 /***************************************************************************************************/
 
@@ -270,3 +273,5 @@ int SimpleSock::Exception::GetNumber() const throw()
 {
     return m_number;
 }
+
+#pragma GCC diagnostic pop

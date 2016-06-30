@@ -182,6 +182,9 @@ void SimpleLog::DefaultFilter::SetFunction(const std::string& function)
 	m_function = function;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 bool SimpleLog::DefaultFilter::Filter(SimpleLog::Level level, const std::string& message, const std::string& module, int line, const std::string& function)
 {
 	bool result;
@@ -193,6 +196,7 @@ bool SimpleLog::DefaultFilter::Filter(SimpleLog::Level level, const std::string&
 	if ((m_function != "") && (m_function != function)) result = false;
 	return result;
 }
+#pragma GCC diagnostic pop
 
 //***********************************************************************************************************************/
 //***																													*/

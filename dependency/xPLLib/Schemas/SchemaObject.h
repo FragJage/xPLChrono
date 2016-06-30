@@ -60,7 +60,7 @@ class SchemaObject : public ISchema
         void SetType(const std::string& schemaType);
 
         ISchema::MsgType GetMsgType() const;
-        const int GetHop() const;
+        int GetHop() const;
         const std::string& GetMsgTypeStr() const;
         const std::string& GetSource() const;
         const std::string& GetClass() const;

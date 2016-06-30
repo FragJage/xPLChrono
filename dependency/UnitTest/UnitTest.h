@@ -1,70 +1,103 @@
-#include<algorithm>
-#include<string>
-#include<vector>
-#include<iomanip>
-#include"termcolor.h"
+#ifndef _FRAGUNITTEST_H
+#define _FRAGUNITTEST_H
 
+#include <vector>
+#include <string>
+#include <iostream>
+#include <iomanip>
+#include"UnitTest/termcolor.h"
 
-#define TEST_METHOD(class_name, method_name) \
-bool class_name##_##method_name(); \
-static TestFunctionAdder class_name##_##method_name##Adder(#class_name, #method_name, &class_name##_##method_name);    \
-bool class_name##_##method_name()
-
-typedef bool(*UnitTestFunction)();
-
-struct TestMethod
+class ITestClass
 {
-	std::string MethodName;
-	UnitTestFunction TestFunction;
-
-	TestMethod(std::string methodName, UnitTestFunction testFunction) : MethodName(methodName), TestFunction(testFunction)
-	{
-	}
+	public:
+	    virtual ~ITestClass() {};
+		virtual bool runTests() = 0;
+		virtual std::string getClassName() = 0;
 };
 
-struct TestClass
+template<typename T>
+class TestClass : public ITestClass
 {
-	std::string ClassName;
-	std::vector<TestMethod> TestMethodList;
+	public:
+		typedef bool (T::*TestMethod)();
+		TestClass(std::string className, T* testClass)
+		{
+			m_ClassName = className;
+			m_TestClass = testClass;
+		};
+		~TestClass()
+		{
+		};
+		void addTest(std::string title, TestMethod testMethod)
+		{
+			m_NameList.push_back(title);
+			m_MethodList.push_back(testMethod);
+		};
+		bool runTests()
+		{
+			TestMethod testMethod;
+			int i, len , padLenght;
+			int imax = m_NameList.size();
+			bool result = true;
 
-	TestClass(std::string className, std::vector<TestMethod> testMethodList) : ClassName(className), TestMethodList(testMethodList)
-	{
-	}
+
+            padLenght = m_ClassName.length();
+			for(i=0; i<imax; i++)
+			{
+                len = m_NameList[i].length();
+                if (len > padLenght) padLenght = len;
+            }
+            padLenght += 5;
+
+            std::cout << termcolor::lightYellow << "- " << m_ClassName << " " << std::setfill('-') << std::setw(padLenght+10 - m_ClassName.length()) << "-" << std::endl;
+			for(i=0; i<imax; i++)
+			{
+                std::cout << "    " << termcolor::lightWhite << m_NameList[i] << std::setfill(' ') << std::setw(padLenght - m_NameList[i].length()) << " ";
+				testMethod = m_MethodList[i];
+                try
+                {
+                    if ((m_TestClass->*testMethod)())
+                        std::cout << termcolor::lightGreen << "OK";
+                    else
+                    {
+                      result = false;
+                      std::cout << termcolor::lightRed << "KO";
+                    }
+                }
+                catch(const std::exception & e)
+                {
+                    result = false;
+                    std::cout << termcolor::lightRed << "FAILED" << std::endl;
+                    std::cout << termcolor::white << "EXCEPTION" << std::endl << e.what();
+                }
+				std::cout << std::endl;
+			}
+            std::cout << termcolor::white;
+            std::cout.copyfmt(std::ios(nullptr));
+            return result;
+		};
+		std::string getClassName()
+		{
+			return m_ClassName;
+		}
+
+	private:
+		std::string m_ClassName;
+		std::vector<std::string> m_NameList;
+		std::vector<TestMethod> m_MethodList;
+		T* m_TestClass;
 };
-
-bool operator==(const TestClass& lhs, const std::string& rhs);
 
 class UnitTest
 {
 	public:
-		typedef bool(*TestFunction)();
-
-		bool Run();
+		UnitTest();
+		~UnitTest();
+		void run();
+		void addTestClass(ITestClass* testClass);
 
 	private:
-		friend class TestFunctionAdder;
-		static std::vector<TestClass> m_TestClassList;
+		std::vector<ITestClass *> m_TestClassList;
 };
 
-class TestFunctionAdder
-{
-	public:
-		TestFunctionAdder(std::string className, std::string methodName, UnitTest::TestFunction func)
-		{
-			std::vector<TestClass>::iterator it;
-			std::vector<TestClass>::iterator itEnd;
-
-
-			itEnd = UnitTest::m_TestClassList.end();
-			it = std::find(UnitTest::m_TestClassList.begin(), itEnd, className);
-			if (it == itEnd)
-			{
-				std::vector<TestMethod> testMethodList = { { methodName, func } };
-				UnitTest::m_TestClassList.emplace_back(className, testMethodList);
-			}
-			else
-			{
-				it->TestMethodList.emplace_back(methodName, func);
-			}
-		}
-};
+#endif

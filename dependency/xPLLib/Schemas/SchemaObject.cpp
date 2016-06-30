@@ -69,7 +69,7 @@ void SchemaObject::SetHop(int hop)
     m_Hop = hop;
 }
 
-const int SchemaObject::GetHop() const
+int SchemaObject::GetHop() const
 {
     return m_Hop;
 }

@@ -1,34 +1,31 @@
-#include "UnitTest/UnitTest.h"
-#include "Counter.h"
-#include <cassert>
+#include "TestCounter.h"
 
 using namespace std;
 
-Counter MyTestCounter;
-time_t MockTime;
-
-void SetMockTime(int year, int month, int day, int hour, int minute, int seconde)
+TestCounter::TestCounter() : TestClass("Counter", this)
 {
-    struct tm myTm;
-
-    myTm.tm_hour = hour;      myTm.tm_min = minute;  myTm.tm_sec = seconde;
-    myTm.tm_year = year-1900; myTm.tm_mon = month-1; myTm.tm_mday = day;
-
-    MockTime = mktime(&myTm);
+	addTest("Set", &TestCounter::Set);
+	addTest("GetSource", &TestCounter::GetSource);
+	addTest("Duration", &TestCounter::Duration);
+	addTest("IsWithoutReset", &TestCounter::IsWithoutReset);
+	addTest("UpdateDuration", &TestCounter::UpdateDuration);
+	addTest("RazPeriodHour", &TestCounter::RazPeriodHour);
+	addTest("RazPeriodDay", &TestCounter::RazPeriodDay);
+	addTest("RazPeriodMonth", &TestCounter::RazPeriodMonth);
+	addTest("RazPeriodYear", &TestCounter::RazPeriodYear);
 }
 
-time_t time(time_t* timer)
+TestCounter::~TestCounter()
 {
-    return MockTime;
 }
 
-TEST_METHOD(Counter, Set)
+bool TestCounter::Set()
 {
     MyTestCounter.Set("fragxpl-owfs.default:lamp", "SECONDE", "2", "MINUTE", false);
     return true;
 }
 
-TEST_METHOD(Counter, GetSource)
+bool TestCounter::GetSource()
 {
     MyTestCounter.Set("fragxpl-owfs.default:lamp", "SECONDE", "2", "MINUTE", false);
     string source = MyTestCounter.GetSource();
@@ -37,7 +34,7 @@ TEST_METHOD(Counter, GetSource)
     return true;
 }
 
-TEST_METHOD(Counter, Duration)
+bool TestCounter::Duration()
 {
     MyTestCounter.Set("fragxpl-owfs.default:lamp", "SECONDE", "2", "MINUTE", false);
     MyTestCounter.SetInternalDuration(185);
@@ -55,7 +52,7 @@ TEST_METHOD(Counter, Duration)
     return true;
 }
 
-TEST_METHOD(Counter, IsWithoutReset)
+bool TestCounter::IsWithoutReset()
 {
     MyTestCounter.Set("fragxpl-owfs.default:lamp", "SECONDE", "", "", true);
     assert(true==MyTestCounter.IsValueToSave());
@@ -64,7 +61,7 @@ TEST_METHOD(Counter, IsWithoutReset)
     return true;
 }
 
-TEST_METHOD(Counter, UpdateDuration)
+bool TestCounter::UpdateDuration()
 {
     SetMockTime(2000,01,01,12,00,00);
     MyTestCounter.Set("fragxpl-owfs.default:lamp", "SECONDE", "2", "MINUTE", false);
@@ -98,7 +95,7 @@ TEST_METHOD(Counter, UpdateDuration)
     return true;
 }
 
-TEST_METHOD(Counter, RazPeriodHour)
+bool TestCounter::RazPeriodHour()
 {
     SetMockTime(2000,01,01,12,00,00);
     MyTestCounter.Set("fragxpl-owfs.default:lamp", "MINUTE", "2", "HOUR", false);
@@ -132,7 +129,7 @@ TEST_METHOD(Counter, RazPeriodHour)
     return true;
 }
 
-TEST_METHOD(Counter, RazPeriodDay)
+bool TestCounter::RazPeriodDay()
 {
     SetMockTime(2000,01,01,12,00,00);
     MyTestCounter.Set("fragxpl-owfs.default:lamp", "HOUR", "3", "DAY", false);
@@ -166,7 +163,7 @@ TEST_METHOD(Counter, RazPeriodDay)
     return true;
 }
 
-TEST_METHOD(Counter, RazPeriodMonth)
+bool TestCounter::RazPeriodMonth()
 {
     SetMockTime(2000,01,01,12,00,00);
     MyTestCounter.Set("fragxpl-owfs.default:lamp", "HOUR", "4", "MONTH", false);
@@ -184,7 +181,7 @@ TEST_METHOD(Counter, RazPeriodMonth)
     return true;
 }
 
-TEST_METHOD(Counter, RazPeriodYear)
+bool TestCounter::RazPeriodYear()
 {
     SetMockTime(2000,01,01,12,00,00);
     MyTestCounter.Set("fragxpl-owfs.default:lamp", "HOUR", "1", "YEAR", false);

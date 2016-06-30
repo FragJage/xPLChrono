@@ -59,7 +59,7 @@ pid_t Process::launch(string command)
     pid = fork();
     if(pid==0)
     {
-        execl(command.c_str(), nullptr);
+        execl(command.c_str(), command.c_str(), nullptr);
         exit(1);
     }
     return pid;
