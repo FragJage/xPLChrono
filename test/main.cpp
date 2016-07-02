@@ -10,7 +10,6 @@ int main()
 
 	unitTest.addTestClass(new TestCounter());
 	unitTest.addTestClass(new TestxPLChrono());
-	unitTest.run();
-
-	return 1;
+	if(!unitTest.run()) return 1;
+	return 0;
 }

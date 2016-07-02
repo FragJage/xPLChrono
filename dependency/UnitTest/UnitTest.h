@@ -11,7 +11,7 @@ class ITestClass
 {
 	public:
 	    virtual ~ITestClass() {};
-		virtual bool runTests() = 0;
+		virtual bool runTests(int* prunCount, int* perrorCount) = 0;
 		virtual std::string getClassName() = 0;
 };
 
@@ -25,19 +25,24 @@ class TestClass : public ITestClass
 			m_ClassName = className;
 			m_TestClass = testClass;
 		};
+
 		~TestClass()
 		{
 		};
+
 		void addTest(std::string title, TestMethod testMethod)
 		{
 			m_NameList.push_back(title);
 			m_MethodList.push_back(testMethod);
 		};
-		bool runTests()
+
+		bool runTests(int* prunCount, int* perrorCount)
 		{
 			TestMethod testMethod;
 			int i, len , padLenght;
 			int imax = m_NameList.size();
+			int runCount = 0;
+			int errorCount = 0;
 			bool result = true;
 
 
@@ -52,6 +57,7 @@ class TestClass : public ITestClass
             std::cout << termcolor::lightYellow << "- " << m_ClassName << " " << std::setfill('-') << std::setw(padLenght+10 - m_ClassName.length()) << "-" << std::endl;
 			for(i=0; i<imax; i++)
 			{
+			    runCount++;
                 std::cout << "    " << termcolor::lightWhite << m_NameList[i] << std::setfill(' ') << std::setw(padLenght - m_NameList[i].length()) << " ";
 				testMethod = m_MethodList[i];
                 try
@@ -61,21 +67,34 @@ class TestClass : public ITestClass
                     else
                     {
                       result = false;
+                      errorCount++;
                       std::cout << termcolor::lightRed << "KO";
                     }
                 }
                 catch(const std::exception & e)
                 {
                     result = false;
+                    errorCount++;
                     std::cout << termcolor::lightRed << "FAILED" << std::endl;
                     std::cout << termcolor::white << "EXCEPTION" << std::endl << e.what();
                 }
 				std::cout << std::endl;
 			}
-            std::cout << termcolor::white;
-            std::cout.copyfmt(std::ios(nullptr));
+
+            std::cout << std::endl;
+			std::cout << termcolor::lightYellow << "    Runs : " << runCount;
+			if(errorCount>0)
+                std::cout << termcolor::lightRed << "    Errors : " << errorCount;
+            else
+                std::cout << termcolor::lightGreen << "    Errors : 0";
+			std::cout << std::endl << std::endl;
+
+            *prunCount += runCount;
+            *perrorCount += errorCount;
+
             return result;
 		};
+
 		std::string getClassName()
 		{
 			return m_ClassName;
@@ -93,7 +112,7 @@ class UnitTest
 	public:
 		UnitTest();
 		~UnitTest();
-		void run();
+		bool run();
 		void addTestClass(ITestClass* testClass);
 
 	private:
