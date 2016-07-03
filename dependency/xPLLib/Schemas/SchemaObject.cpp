@@ -135,13 +135,13 @@ string SchemaObject::MsgTypeToString(ISchema::MsgType type)
 {
     switch(type)
     {
-        case ISchema::cmnd : return string("xpl-cmnd");
-        case ISchema::stat : return string("xpl-stat");
-        case ISchema::trig : return string("xpl-trig");
+        case ISchema::cmnd : return "xpl-cmnd";
+        case ISchema::stat : return "xpl-stat";
+        case ISchema::trig : return "xpl-trig";
         default :
             throw SchemaObject::Exception(0x0007, "SchemaObject::MsgTypeToString: Unknown message type (known types cmnd|stat|trig)");
     }
-    return string("");
+    return "";
 }
 
 ISchema::MsgType SchemaObject::MsgTypeToEnum(const string& type)
