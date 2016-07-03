@@ -159,6 +159,7 @@ bool TestxPLChrono::Stop()
     xPLDev.ServiceStop();
 
     msg = ControlSockMock::GetLastSend(10);     //Pass hbeat message
+    Plateforms::delay(5000);
     return true;
 }
 
@@ -167,11 +168,9 @@ bool TestxPLChrono::ReStart()
     string msg;
     xPL::SchemaObject sch;
 
-    Plateforms::delay(5000);
     thread integrationTest(ThreadStart, &xPLDev);
     integrationTest.detach();
 
-    Plateforms::delay(5000);
     msg = ControlSockMock::GetLastSend(10);     //Pass hbeat message
     return true;
 }

@@ -7,14 +7,14 @@ addons:
                 sources: ['ubuntu-toolchain-r-test']
                 packages: ['g++-4.9','valgrind']
 
-#install:
-#  - pip install --user git+git://github.com/eddyxu/cpp-coveralls.git
+install:
+  - pip install --user git+git://github.com/eddyxu/cpp-coveralls.git
 
 script:
   - cmake . -G"Unix Makefiles" -DCMAKE_CXX_COMPILER=$(which $COMPILER)
   - make
+  
+after_success:
   - ./test/bin/unittest
   - valgrind --error-exitcode=1 --leak-check=full ./test/bin/unittest
-  
-#after_success:
   - coveralls --exclude test/main.cpp --include src/SimpleSock.cpp --gcov-options '\-lp' --gcov 'gcov-4.9'
