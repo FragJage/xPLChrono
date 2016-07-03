@@ -13,8 +13,8 @@ install:
 script:
   - cmake . -G"Unix Makefiles" -DCMAKE_CXX_COMPILER=$(which $COMPILER)
   - make
+  - ./test/bin/unittest
   
 after_success:
-  - ./test/bin/unittest
   - valgrind --error-exitcode=1 --leak-check=full ./test/bin/unittest
-  - coveralls --exclude test/main.cpp --include src/SimpleSock.cpp --gcov-options '\-lp' --gcov 'gcov-4.9'
+  - coveralls --include src --gcov-options '\-lp' --gcov 'gcov-4.9'
