@@ -8,10 +8,12 @@ using namespace std;
 
 Counter::Counter()
 {
+    m_duration = 0;
 }
 
 Counter::Counter(const string& source, const string& unit, const string& razPeriod, const string& razUnit, bool saveValue)
 {
+    m_duration = 0;
     Set(source, unit, razPeriod, razUnit, saveValue);
 }
 
@@ -29,7 +31,6 @@ void Counter::Set(const string& source, const string& unit, const string& razPer
     m_razTime = time(nullptr);
     InitRazPeriod();
 
-    m_duration = 0;
     m_lastTime = time(nullptr);
     m_stateHIGH = false;
     m_saveValue = saveValue;
@@ -81,9 +82,28 @@ unsigned int Counter::GetInternalDuration()
     return m_duration;
 }
 
-void Counter::SetInternalDuration(unsigned int duration)
+void Counter::SetSavedDuration(unsigned int duration, time_t lastTime)
 {
-    m_duration = duration;
+    time_t newTime = time(nullptr);
+
+    if(m_razPeriod==ePeriod::PERIOD_NONE)
+    {
+        m_duration = duration;
+        return;
+    }
+
+    if((m_razPeriod!=ePeriod::PERIOD_NONE)&&(difftime(newTime, m_razTime)>0))
+    {
+        m_duration = 0;
+        while(difftime(newTime, m_razTime)>0)
+            NextRazPeriod();
+    }
+
+    if((m_razPeriod!=ePeriod::PERIOD_NONE)&&(difftime(lastTime, PrevRazPeriod())>=0))
+    {
+        m_duration = duration;
+        return;
+    }
 }
 
 bool Counter::UpdateDuration(const string& state)
@@ -148,6 +168,44 @@ void Counter::NextRazPeriod()
         case ePeriod::PERIOD_NONE:
             return;
 	}
+}
+
+time_t Counter::PrevRazPeriod()
+{
+	struct tm *t;
+
+
+	switch(m_razUnit)
+	{
+		case ePeriod::PERIOD_MINUTE:
+			return m_razTime - m_razPeriod*60;
+			break;
+		case ePeriod::PERIOD_HOUR:
+			return m_razTime - m_razPeriod*60*60;
+			break;
+		case ePeriod::PERIOD_DAY:
+			return m_razTime - m_razPeriod*60*60*24;
+			break;
+		case ePeriod::PERIOD_MONTH:
+			t = localtime(&m_razTime);
+			t->tm_mon -= m_razPeriod;
+			if(t->tm_mon<1)
+			{
+				t->tm_mon += 12;
+				t->tm_year--;
+			}
+			return mktime(t);
+			break;
+		case ePeriod::PERIOD_YEAR:
+			t = localtime(&m_razTime);
+			t->tm_year -= m_razPeriod;
+			return mktime(t);
+			break;
+        case ePeriod::PERIOD_NONE:
+            return time(nullptr);
+	}
+
+	return time(nullptr);
 }
 
 void Counter::InitRazPeriod()

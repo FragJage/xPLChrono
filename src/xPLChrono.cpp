@@ -145,7 +145,6 @@ void xPLChrono::AdvanceConfigure()
     int i;
     int nb;
 
-
     LOG_ENTER;
 
     ConfigsDelete();
@@ -217,6 +216,7 @@ void xPLChrono::SaveData()
     string fileName = GetDataFileName();
     fstream dataFile;
 
+
     dataFile.open(fileName, fstream::out);
     if(!dataFile.is_open())
     {
@@ -227,7 +227,7 @@ void xPLChrono::SaveData()
     for(it = m_Counters.begin(); it != itEnd; ++it)
     {
         if(!it->second.IsValueToSave()) continue;
-        dataFile << it->first << " " << it->second.GetInternalDuration();
+        dataFile << it->first << " " << it->second.GetInternalDuration() << " " << time(nullptr);
     }
     dataFile.close();
 }
@@ -239,6 +239,7 @@ void xPLChrono::LoadData()
     string configName;
     unsigned int duration;
     map<string, Counter>::iterator it;
+    time_t lastTime;
 
 
     dataFile.open(fileName, fstream::in);
@@ -251,9 +252,10 @@ void xPLChrono::LoadData()
     while(dataFile >> configName)
     {
         dataFile >> duration;
+        dataFile >> lastTime;
         it = m_Counters.find(configName);
         if(it==m_Counters.end()) continue;
-        it->second.SetInternalDuration(duration);
+        it->second.SetSavedDuration(duration, lastTime);
         m_Sensors.ModifyMessage(configName, it->second.GetDuration());
     }
 }

@@ -18,13 +18,14 @@ class Counter
         std::string GetSource();
         std::string GetDuration();
         unsigned int GetInternalDuration();
-        void SetInternalDuration(unsigned int duration);
+        void SetSavedDuration(unsigned int duration, time_t lastTime);
         bool UpdateDuration(const std::string& state);
         bool IsValueToSave();
 
     private:
         void InitRazPeriod();
         void NextRazPeriod();
+        time_t PrevRazPeriod();
         double FloorDuration(int duration);
         ePeriod ToPeriod(const std::string& period);
         eUnit ToUnit(const std::string& unit);

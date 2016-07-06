@@ -12,6 +12,7 @@ public:
     ~TestCounter();
     bool Set();
     bool GetSource();
+    bool SetSavedDuration();
     bool Duration();
     bool IsWithoutReset();
     bool UpdateDuration();
@@ -19,7 +20,4 @@ public:
     bool RazPeriodDay();
     bool RazPeriodMonth();
     bool RazPeriodYear();
-
-private:
-    Counter MyTestCounter;
 };

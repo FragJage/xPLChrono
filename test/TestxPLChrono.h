@@ -24,9 +24,11 @@ public:
     bool SetAdvConfig();
     bool Counter();
     bool GetAdvConfig();
+    bool ModifyAdvConfig();
     bool Stop();
     bool ReStart();
     bool SavedValue();
+    bool ResetSavedValue();
     bool DelAdvConfig();
     bool ReStop();
     xPLChrono xPLDev;

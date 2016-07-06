@@ -11,9 +11,11 @@ TestxPLChrono::TestxPLChrono() : TestClass("xPLChrono", this)
 	addTest("SetAdvConfig", &TestxPLChrono::SetAdvConfig);
 	addTest("Counter", &TestxPLChrono::Counter);
 	addTest("GetAdvConfig", &TestxPLChrono::GetAdvConfig);
+	addTest("ModifyAdvConfig", &TestxPLChrono::ModifyAdvConfig);
 	addTest("Stop", &TestxPLChrono::Stop);
 	addTest("ReStart", &TestxPLChrono::ReStart);
 	addTest("SavedValue", &TestxPLChrono::SavedValue);
+	addTest("ResetSavedValue", &TestxPLChrono::ResetSavedValue);
 	addTest("DelAdvConfig", &TestxPLChrono::DelAdvConfig);
 	addTest("ReStop", &TestxPLChrono::ReStop);
 }
@@ -146,6 +148,40 @@ bool TestxPLChrono::GetAdvConfig()
     assert("current"==sch.GetType());
     assert("testdevice"==sch.GetValue("configname"));
     assert("fragxpl-owfs.default:lamp"==sch.GetValue("source"));
+    assert("2"==sch.GetValue("resetperiod"));
+
+    return true;
+}
+
+bool TestxPLChrono::ModifyAdvConfig()
+{
+    string msg;
+    xPL::SchemaObject sch;
+    xPL::SchemaObject schAdvCfgReq(xPL::ISchema::cmnd, "advanceconfig", "request");
+    xPL::SchemaObject schAdvCfgCur(xPL::ISchema::cmnd, "advanceconfig", "current");
+
+    schAdvCfgReq.SetValue("configname", "testdevice");
+    schAdvCfgReq.SetValue("source", "fragxpl-owfs.default:lamp");
+    schAdvCfgReq.SetValue("unit", "SECONDE");
+    schAdvCfgReq.SetValue("resetperiod", "120");
+    schAdvCfgReq.SetValue("resetunit", "MINUTE");
+    schAdvCfgReq.SetValue("savevalue", "1");
+    msg = schAdvCfgReq.ToMessage("fragxpl-test.default", "fragxpl-chrono.test");
+    ControlSockMock::SetNextRecv(msg);
+    msg = ControlSockMock::GetLastSend(10);     //Pass request state of device fragxpl-owfs.default:lamp
+
+    schAdvCfgCur.SetValue("command", "request");
+    schAdvCfgCur.SetValue("configname", "testdevice");
+    msg = schAdvCfgCur.ToMessage("fragxpl-test.default", "fragxpl-chrono.test");
+    ControlSockMock::SetNextRecv(msg);
+
+    msg = ControlSockMock::GetLastSend(10);
+    sch.Parse(msg);
+    assert("advanceconfig"==sch.GetClass());
+    assert("current"==sch.GetType());
+    assert("testdevice"==sch.GetValue("configname"));
+    assert("fragxpl-owfs.default:lamp"==sch.GetValue("source"));
+    assert("120"==sch.GetValue("resetperiod"));
 
     return true;
 }
@@ -159,14 +195,13 @@ bool TestxPLChrono::Stop()
     xPLDev.ServiceStop();
 
     msg = ControlSockMock::GetLastSend(10);     //Pass hbeat message
-    Plateforms::delay(5000);
+    Plateforms::delay(200);
     return true;
 }
 
 bool TestxPLChrono::ReStart()
 {
     string msg;
-    xPL::SchemaObject sch;
 
     thread integrationTest(ThreadStart, &xPLDev);
     integrationTest.detach();
@@ -189,6 +224,36 @@ bool TestxPLChrono::SavedValue()
     msg = ControlSockMock::GetLastSend(10);
     sch.Parse(msg);
     assert("5400"==sch.GetValue("current"));
+
+    return true;
+}
+
+bool TestxPLChrono::ResetSavedValue()
+{
+    string msg;
+    xPL::SchemaObject sch;
+    xPL::SchemaObject schSensor(xPL::ISchema::cmnd, "sensor", "request");
+
+
+    xPLDev.ServiceStop();
+    msg = ControlSockMock::GetLastSend(10);     //Pass hbeat message
+    Plateforms::delay(200);
+
+    SetMockTime(2000, 1, 1, 17, 00, 0);
+
+    thread integrationTest(ThreadStart, &xPLDev);
+    integrationTest.detach();
+    msg = ControlSockMock::GetLastSend(10);     //Pass hbeat message
+    Plateforms::delay(200);
+
+    schSensor.SetValue("request", "current");
+    schSensor.SetValue("device", "testdevice");
+    msg = schSensor.ToMessage("fragxpl-test.default", "fragxpl-chrono.test");
+    ControlSockMock::SetNextRecv(msg);
+
+    msg = ControlSockMock::GetLastSend(10);
+    sch.Parse(msg);
+    assert("0"==sch.GetValue("current"));
 
     return true;
 }
