@@ -443,6 +443,8 @@ void xPLDevice::Close()
     m_SenderSock.Close();
     m_ReceiverSock.Close();
 
+    m_bLoadConfig = false;
+
     LOG_EXIT_OK;
 }
 
