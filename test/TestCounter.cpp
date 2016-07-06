@@ -42,10 +42,9 @@ bool TestCounter::GetSource()
 
 bool TestCounter::SetSavedDuration()
 {
-    Counter myTestCounter;
+    Counter myTestCounter("fragxpl-owfs.default:lamp", "SECONDE", "2", "MINUTE", false);
     time_t myTime;
 
-    myTestCounter.Set("fragxpl-owfs.default:lamp", "SECONDE", "2", "MINUTE", false);
 
     SetMockTime(2000,01,01,12,00,00);
     myTime = time(nullptr);
@@ -55,6 +54,27 @@ bool TestCounter::SetSavedDuration()
     SetMockTime(2000,01,01,12,05,00);
     myTestCounter.SetSavedDuration(185, myTime);
     assert(0==myTestCounter.GetInternalDuration());
+
+    //Increase code coverage
+    myTestCounter.Set("fragxpl-owfs.default:lamp", "SECONDE", "2", "HOUR", false);
+    myTestCounter.SetSavedDuration(18, time(nullptr));
+    assert(18==myTestCounter.GetInternalDuration());
+
+    myTestCounter.Set("fragxpl-owfs.default:lamp", "SECONDE", "400", "DAY", false);
+    myTestCounter.SetSavedDuration(85, time(nullptr));
+    assert(85==myTestCounter.GetInternalDuration());
+
+    myTestCounter.Set("fragxpl-owfs.default:lamp", "SECONDE", "14", "MONTH", false);
+    myTestCounter.SetSavedDuration(28, time(nullptr));
+    assert(28==myTestCounter.GetInternalDuration());
+
+    myTestCounter.Set("fragxpl-owfs.default:lamp", "SECONDE", "2", "YEAR", false);
+    myTestCounter.SetSavedDuration(87, time(nullptr));
+    assert(87==myTestCounter.GetInternalDuration());
+
+    myTestCounter.Set("fragxpl-owfs.default:lamp", "SECONDE", "", "", false);
+    myTestCounter.SetSavedDuration(15, time(nullptr));
+    assert(15==myTestCounter.GetInternalDuration());
 
     return true;
 }
