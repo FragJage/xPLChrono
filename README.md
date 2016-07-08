@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/FragJage/xPLChrono.svg?branch=master)](https://travis-ci.org/FragJage/xPLChrono)
 [![Coverage Status](https://coveralls.io/repos/github/FragJage/xPLChrono/badge.svg?branch=master)](https://coveralls.io/github/FragJage/xPLChrono?branch=master)
+[![Coverity Scan Build](https://scan.coverity.com/projects/9372/badge.svg)](https://scan.coverity.com/projects/9372)
 xPLChrono
 ===========
 xPL daemon to count minutes when a device have the state HIGH. 
