@@ -9,7 +9,6 @@ Introduction
 ============
 This daemon count hours and minutes when a devices is HIGH. The counter can be reset periodically  
 
-
 Features
 ========
  - List of devices to count state
@@ -18,17 +17,15 @@ Features
  
 Portability
 ===========
-TODO
 Unit tests passed successfully on :
  - Windows Seven (CPU Intel Celeron)
- - Linux Ubuntu (CPU Intel Atom)
+ - (TODO) Linux Ubuntu (CPU Intel Atom)
  - Linux Raspian on Raspberry Pi (CPU ARM)
- - Linux FunPlug on NAS DNS-320 (CPU ARM)
+ - (TODO) Linux FunPlug on NAS DNS-320 (CPU ARM)
 
 For more informations
 =====================
-TODO
-See documentation in doc/html/index.html
+TODO See documentation in doc/html/index.html
 
 Licence
 =======
