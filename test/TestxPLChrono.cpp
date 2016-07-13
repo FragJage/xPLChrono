@@ -64,6 +64,7 @@ bool TestxPLChrono::StdConfig()
     msg = schCfg.ToMessage("fragxpl-test.default", "fragxpl-chrono.default");
     ControlSockMock::SetNextRecv(msg);
 
+    msg = ControlSockMock::GetLastSend(10);     //Pass Hbeat message
     msg = ControlSockMock::GetLastSend(10);
     sch.Parse(msg);
     assert("30"==sch.GetValue("interval"));
@@ -87,6 +88,14 @@ bool TestxPLChrono::SetAdvConfig()
     schAdvCfg.SetValue("savevalue", "1");
     msg = schAdvCfg.ToMessage("fragxpl-test.default", "fragxpl-chrono.test");
     ControlSockMock::SetNextRecv(msg);
+
+    msg = ControlSockMock::GetLastSend(10);
+    sch.Parse(msg);
+    assert("sensor"==sch.GetClass());
+    assert("basic"==sch.GetType());
+    assert("testdevice"==sch.GetValue("device"));
+    assert("count"==sch.GetValue("type"));
+    assert("0"==sch.GetValue("current"));
 
     msg = ControlSockMock::GetLastSend(10);
     sch.Parse(msg);
@@ -207,6 +216,7 @@ bool TestxPLChrono::ReStart()
     integrationTest.detach();
 
     msg = ControlSockMock::GetLastSend(10);     //Pass hbeat message
+    msg = ControlSockMock::GetLastSend(10);     //Pass request current lamp
     return true;
 }
 
