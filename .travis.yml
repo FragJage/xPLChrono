@@ -19,7 +19,7 @@ addons:
     notification_email: inscrip.jage@free.fr
     build_command_prepend: "cmake ."
     build_command: "make"
-    branch_pattern: coverity_scan
+    branch_pattern: coverity_branch
     
 install:
   - pip install --user git+git://github.com/eddyxu/cpp-coveralls.git
