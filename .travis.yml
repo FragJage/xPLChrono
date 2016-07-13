@@ -17,7 +17,7 @@ addons:
       name: "FragJage/xPLChrono"
       description: "xPL daemon to count minutes when a device have the state HIGH"
     notification_email: inscrip.jage@free.fr
-    build_command_prepend: "cmake ."
+    build_command_prepend: "cmake . -G"Unix Makefiles" -DCMAKE_CXX_COMPILER=$(which $COMPILER)"
     build_command: "make"
     branch_pattern: coverity_branch
     
