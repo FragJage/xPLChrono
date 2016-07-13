@@ -17,7 +17,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage") # enabling coverage
  
 include_directories(../dependency)
  
-#Génération de la liste des fichiers sources
+#GÃ©nÃ©ration de la liste des fichiers sources
 file(
   GLOB_RECURSE
   Plateforms_files
@@ -72,8 +72,8 @@ file(
   ../dependency/xPLLib/*
 )
 
-#Déclaration de l'exécutable
-set(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
+#DÃ©claration de l'exÃ©cutable
+#set(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 add_executable(
   unittest
   ${Plateforms_files}
@@ -98,7 +98,7 @@ add_executable(
 
 target_link_libraries(unittest ${CMAKE_THREAD_LIBS_INIT} )
 
-#Spécification WIN32
+#SpÃ©cification WIN32
 if(WIN32)
   target_link_libraries(unittest ws2_32)
 endif()
