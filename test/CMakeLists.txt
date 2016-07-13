@@ -73,7 +73,7 @@ file(
 )
 
 #Déclaration de l'exécutable
-#set(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
+set(EXECUTABLE_OUTPUT_PATH ..)
 add_executable(
   unittest
   ${Plateforms_files}
