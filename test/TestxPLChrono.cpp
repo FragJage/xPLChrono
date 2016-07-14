@@ -11,6 +11,7 @@ TestxPLChrono::TestxPLChrono() : TestClass("xPLChrono", this)
 	addTest("SetAdvConfig", &TestxPLChrono::SetAdvConfig);
 	addTest("Counter", &TestxPLChrono::Counter);
 	addTest("GetAdvConfig", &TestxPLChrono::GetAdvConfig);
+	addTest("SourceMissing", &TestxPLChrono::SourceMissing);
 	addTest("ModifyAdvConfig", &TestxPLChrono::ModifyAdvConfig);
 	addTest("Stop", &TestxPLChrono::Stop);
 	addTest("ReStart", &TestxPLChrono::ReStart);
@@ -115,6 +116,33 @@ bool TestxPLChrono::SetAdvConfig()
     return true;
 }
 
+bool TestxPLChrono::SourceMissing()
+{
+    string msg;
+    xPL::SchemaObject sch;
+    xPL::SchemaObject schSensor(xPL::ISchema::trig, "sensor", "basic");
+    xPL::SchemaObject schAdvCfg(xPL::ISchema::cmnd, "advanceconfig", "request");
+
+    schAdvCfg.SetValue("configname", "misssrc");
+    schAdvCfg.SetValue("source", "");
+    schAdvCfg.SetValue("unit", "SECONDE");
+    schAdvCfg.SetValue("resetperiod", "2");
+    schAdvCfg.SetValue("resetunit", "HOUR");
+    schAdvCfg.SetValue("savevalue", "1");
+    msg = schAdvCfg.ToMessage("fragxpl-test.default", "fragxpl-chrono.test");
+    ControlSockMock::SetNextRecv(msg);
+
+    msg = ControlSockMock::GetLastSend(10);
+    sch.Parse(msg);
+    assert("sensor"==sch.GetClass());
+    assert("basic"==sch.GetType());
+    assert("misssrc"==sch.GetValue("device"));
+    assert("count"==sch.GetValue("type"));
+    assert("0"==sch.GetValue("current"));
+
+    return true;
+}
+
 bool TestxPLChrono::Counter()
 {
     string msg;
@@ -200,6 +228,7 @@ bool TestxPLChrono::Stop()
     string msg;
 
     xPLDev.ServicePause(true);
+    Plateforms::delay(800);
     xPLDev.ServicePause(false);
     xPLDev.ServiceStop();
 

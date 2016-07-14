@@ -223,15 +223,15 @@ bool TestCounter::RazPeriodMonth()
     Counter myTestCounter;
 
     SetMockTime(2000,01,01,12,00,00);
-    myTestCounter.Set("fragxpl-owfs.default:lamp", "HOUR", "4", "MONTH", false);
+    myTestCounter.Set("fragxpl-owfs.default:lamp", "HOUR", "14", "MONTH", false);
     myTestCounter.UpdateDuration("HIGH");
     SetMockTime(2000,01,02,12,00,00);
     myTestCounter.UpdateDuration("LOW");
     assert("24.0"==myTestCounter.GetDuration());
 
-    SetMockTime(2000,06,10,15,00,00);
+    SetMockTime(2001,06,10,15,00,00);
     myTestCounter.UpdateDuration("HIGH");
-    SetMockTime(2000,06,11,20,00,00);
+    SetMockTime(2001,06,11,20,00,00);
     myTestCounter.UpdateDuration("LOW");
     assert("29.0"==myTestCounter.GetDuration());
 
