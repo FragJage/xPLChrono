@@ -114,7 +114,11 @@ void xPLChrono::ConfigChange(const string& configName)
         it->second.Set(source, unit, razPeriod, razUnit, saveValue);
         m_DeviceCount[source]++;
     }
-    RequestValue(source);
+
+    if(source=="")
+        LOG_WARNING(m_Log) << "Counter " << configName << ": No source, Counter ignored";
+    else
+        RequestValue(source);
 }
 
 void xPLChrono::ConfigDelete(const string& configName)
@@ -175,11 +179,11 @@ void xPLChrono::AdvanceConfigure()
 
         if(source=="")
         {
-            LOG_WARNING(m_Log) << "Filter " << configName << ": No source, filter ignored";
+            LOG_WARNING(m_Log) << "Counter " << configName << ": No source, Counter ignored";
             continue;
         }
 
-        LOG_VERBOSE(m_Log) << "New filter " << configName << ":" << source << " unit " << unit << ", razPeriod " << razPeriod << " " <<razUnit;
+        LOG_VERBOSE(m_Log) << "New Counter " << configName << ":" << source << " unit " << unit << ", razPeriod " << razPeriod << " " <<razUnit;
         counter.Set(source, unit, razPeriod, razUnit, saveValue);
         m_Counters[configName] = counter;
         m_DeviceCount[source]++;

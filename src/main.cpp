@@ -1,11 +1,22 @@
+#include <iostream>
+#include <exception>
 #include "xPLChrono.h"
 
 int main(int argc, char* argv[])
 {
-    xPLChrono xPLDev;
+    int res = 0;
 
-	Service* pService = Service::Create("xPLChrono", "Count when a device have the HIGH state", &xPLDev);
-	int res = pService->Start(argc, argv);
-	Service::Destroy();
+    try
+    {
+        xPLChrono xPLDev;
+
+        Service* pService = Service::Create("xPLChrono", "Count when a device have the HIGH state", &xPLDev);
+        res = pService->Start(argc, argv);
+        Service::Destroy();
+    }
+    catch(const exception &e)
+    {
+        std::cout << e.what();
+    }
 	return res;
 }

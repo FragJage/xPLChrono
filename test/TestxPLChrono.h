@@ -22,6 +22,7 @@ public:
     bool Start();
     bool StdConfig();
     bool SetAdvConfig();
+    bool SourceMissing();
     bool Counter();
     bool GetAdvConfig();
     bool ModifyAdvConfig();

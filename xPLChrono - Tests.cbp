@@ -76,6 +76,8 @@
 		<Unit filename="dependency/xPLLib/Schemas/SchemaAdvanceConfig.h" />
 		<Unit filename="dependency/xPLLib/Schemas/SchemaConfig.cpp" />
 		<Unit filename="dependency/xPLLib/Schemas/SchemaConfig.h" />
+		<Unit filename="dependency/xPLLib/Schemas/SchemaControl.cpp" />
+		<Unit filename="dependency/xPLLib/Schemas/SchemaControl.h" />
 		<Unit filename="dependency/xPLLib/Schemas/SchemaHbeat.cpp" />
 		<Unit filename="dependency/xPLLib/Schemas/SchemaHbeat.h" />
 		<Unit filename="dependency/xPLLib/Schemas/SchemaObject.cpp" />

@@ -8,7 +8,14 @@ using namespace std;
 
 Counter::Counter()
 {
-    m_duration = 0;
+    m_duration  = 0;
+    m_unit      = eUnit::UNIT_HOUR;
+    m_lastTime  = time(nullptr);
+    m_stateHIGH = false;
+    m_saveValue = false;
+    m_razPeriod = 0;
+    m_razUnit   = ePeriod::PERIOD_NONE;
+    m_razTime   = time(nullptr);
 }
 
 Counter::Counter(const string& source, const string& unit, const string& razPeriod, const string& razUnit, bool saveValue)
@@ -214,6 +221,7 @@ void Counter::InitRazPeriod()
 	float n;
 
 
+    if(m_razPeriod==0) m_razUnit = ePeriod::PERIOD_NONE;
 	t = localtime(&m_razTime);
 
 	switch(m_razUnit)
