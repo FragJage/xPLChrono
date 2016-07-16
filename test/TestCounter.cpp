@@ -14,6 +14,7 @@ TestCounter::TestCounter() : TestClass("Counter", this)
 	addTest("RazPeriodDay", &TestCounter::RazPeriodDay);
 	addTest("RazPeriodMonth", &TestCounter::RazPeriodMonth);
 	addTest("RazPeriodYear", &TestCounter::RazPeriodYear);
+	addTest("RazUnitButNoRazPeriod", &TestCounter::RazUnitButNoRazPeriod);
     SetMockTime(2000,01,01,12,00,00);
 }
 
@@ -255,5 +256,13 @@ bool TestCounter::RazPeriodYear()
     myTestCounter.UpdateDuration("LOW");
     assert("29.0"==myTestCounter.GetDuration());
 
+    return true;
+}
+
+bool TestCounter::RazUnitButNoRazPeriod()
+{
+    Counter myTestCounter;
+
+    myTestCounter.Set("fragxpl-owfs.default:lamp", "SECONDE", "0", "MINUTE", false);
     return true;
 }

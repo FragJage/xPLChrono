@@ -20,4 +20,5 @@ public:
     bool RazPeriodDay();
     bool RazPeriodMonth();
     bool RazPeriodYear();
+    bool RazUnitButNoRazPeriod();
 };

@@ -2,8 +2,6 @@
 
 using namespace std;
 
-xPLChrono xPLDev;
-
 TestxPLChrono::TestxPLChrono() : TestClass("xPLChrono", this)
 {
 	addTest("Start", &TestxPLChrono::Start);
