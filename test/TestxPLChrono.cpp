@@ -224,13 +224,17 @@ bool TestxPLChrono::ModifyAdvConfig()
 bool TestxPLChrono::Stop()
 {
     string msg;
+    xPL::SchemaObject sch;
 
     xPLDev.ServicePause(true);
     Plateforms::delay(800);
     xPLDev.ServicePause(false);
     xPLDev.ServiceStop();
 
-    msg = ControlSockMock::GetLastSend(10);     //Pass hbeat message
+    msg = ControlSockMock::GetLastSend(10);
+    sch.Parse(msg);
+    assert("hbeat"==sch.GetClass());
+    assert("end"==sch.GetType());
     Plateforms::delay(200);
     return true;
 }
@@ -313,12 +317,26 @@ bool TestxPLChrono::DelAdvConfig()
     ControlSockMock::SetNextRecv(msg);
     Plateforms::delay(500);
 
+    msg = ControlSockMock::GetLastSend(10); //Pass message1
+    msg = ControlSockMock::GetLastSend(10); //Pass message2
+    msg = ControlSockMock::GetLastSend(10); //Pass message3
+
     return true;
 }
 
 bool TestxPLChrono::ReStop()
 {
+    string msg;
+    xPL::SchemaObject sch;
+
     xPLDev.ServiceStop();
+
+    msg = ControlSockMock::GetLastSend(10);
+    sch.Parse(msg);
+    assert("hbeat"==sch.GetClass());
+    assert("end"==sch.GetType());
+    Plateforms::delay(200);
+
     remove("config");
     return true;
 }
