@@ -44,7 +44,10 @@ class TestClass : public ITestClass
 			int runCount = 0;
 			int errorCount = 0;
 			bool result = true;
+			std::ios  oldState(NULL);
 
+
+            oldState.copyfmt(std::cout);
 
             padLenght = m_ClassName.length();
 			for(i=0; i<imax; i++)
@@ -89,6 +92,8 @@ class TestClass : public ITestClass
                 std::cout << termcolor::lightGreen << "    Errors : 0";
 			std::cout << std::endl << std::endl;
             std::cout.copyfmt(std::ios(nullptr));
+
+            std::cout.copyfmt(oldState);
 
             *prunCount += runCount;
             *perrorCount += errorCount;
